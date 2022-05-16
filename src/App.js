@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import Filter from 'components/Filter/Filter';
 import ContactForm from 'components/ContactForm/ContactForm';
 import ContactList from 'components/ContactList/ContactList';
@@ -45,13 +45,9 @@ export default function App() {
 
    const changeFilter = e => setFilterCont(e.target.value);
 
-   const visibleContacts = useMemo(() => {
-      return contacts.filter(contact =>
-         contact.name
-            .toLocaleLowerCase()
-            .includes(filterCont.toLocaleLowerCase())
-      );
-   }, [contacts, filterCont]);
+   const visibleContacts = contacts.filter(contact =>
+      contact.name.toLocaleLowerCase().includes(filterCont.toLocaleLowerCase())
+   );
 
    return (
       <div className={s.main}>

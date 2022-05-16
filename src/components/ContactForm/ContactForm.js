@@ -30,7 +30,6 @@ export default function ContactForm({ onSubmit, checkNewContact }) {
       onSubmit(newContact);
       setState(INITIALE_STATE);
    };
-   console.log('form');
    return (
       <form className={s.form} onSubmit={onSubmitForm}>
          <label className={s.label}>
