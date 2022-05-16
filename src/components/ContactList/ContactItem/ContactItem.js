@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
 import s from './ContactItem.module.css';
+import sBtn from '../../../App.module.css';
 
 export default function ContactItem({ id, name, number, deleteContact }) {
    return (
       <li className={s.item} id={id}>
          {name}: {number}
-         <button
-            className={s.btn}
-            type="button"
-            onClick={() => deleteContact(id)}
-         >
-            Delete
-         </button>
+         <div className={sBtn.btn + ' ' + s.btn}>
+            <button type="button" onClick={() => deleteContact(id)}>
+               Delete
+            </button>
+         </div>
       </li>
    );
 }

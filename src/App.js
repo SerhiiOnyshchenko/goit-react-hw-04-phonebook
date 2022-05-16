@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Filter from 'components/Filter/Filter';
 import ContactForm from 'components/ContactForm/ContactForm';
 import ContactList from 'components/ContactList/ContactList';
+import s from 'App.module.css';
 
 const contactsList = [
    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -9,27 +10,21 @@ const contactsList = [
    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
 ];
+
 export default function App() {
-   const [contacts, setContacts] = useState(contactsList);
+   const [contacts, setContacts] = useState(
+      () => JSON.parse(window.localStorage.getItem('contacts')) ?? contactsList
+   );
    const [filterCont, setFilterCont] = useState('');
-   const [isLocal, setIsLocal] = useState(false);
 
    useEffect(() => {
-      console.log('efect 1');
-      const contacts = JSON.parse(window.localStorage.getItem('contacts'));
-      contacts && setContacts(contacts);
-   }, []);
-   useEffect(() => {
-      if (isLocal && contacts) {
-         console.log('efect 2');
-         window.localStorage.setItem('contacts', JSON.stringify(contacts));
-      }
-   }, [isLocal, contacts]);
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+   }, [contacts]);
 
    const onSubmit = newContact => {
-      setIsLocal(true);
-      setContacts(prev => prev.push(newContact));
+      setContacts([...contacts, newContact]);
    };
+
    const checkNewContact = newContact => {
       if (
          contacts.find(
@@ -47,14 +42,19 @@ export default function App() {
    const deleteContact = id => {
       setContacts(prev => prev.filter(contact => contact.id !== id));
    };
+
    const changeFilter = e => setFilterCont(e.target.value);
 
-   let filterValue = filterCont.toLocaleLowerCase();
-   let visibleContacts = contacts.filter(contact =>
-      contact.name.toLocaleLowerCase().includes(filterValue)
-   );
+   const visibleContacts = useMemo(() => {
+      return contacts.filter(contact =>
+         contact.name
+            .toLocaleLowerCase()
+            .includes(filterCont.toLocaleLowerCase())
+      );
+   }, [contacts, filterCont]);
+
    return (
-      <div className="main">
+      <div className={s.main}>
          <h1>Phonebook</h1>
          <ContactForm onSubmit={onSubmit} checkNewContact={checkNewContact} />
          <h2>Contacts</h2>
